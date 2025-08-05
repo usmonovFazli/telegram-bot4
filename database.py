@@ -1,6 +1,8 @@
 import psycopg2
 import os
 from dotenv import load_dotenv
+from datetime import datetime
+
 load_dotenv()
 
 DB_PARAMS = {
@@ -82,7 +84,9 @@ def increment_video_count(chat_id):
     with connect() as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                UPDATE channels SET videos = videos + 1 WHERE id = %s;
+                UPDATE channels
+                SET videos = videos + 1
+                WHERE id = %s;
             """, (chat_id,))
         conn.commit()
 
@@ -92,6 +96,7 @@ def get_channels():
         with conn.cursor() as cur:
             cur.execute("""
                 SELECT id, title, members, videos, date_added, type, link
-                FROM channels ORDER BY title;
+                FROM channels
+                ORDER BY date_added;
             """)
             return cur.fetchall()
